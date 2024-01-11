@@ -4,7 +4,7 @@ import { deleteChildList, updateChildList } from "../store/listSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 Modal.setAppElement("#root");
-const Card = ({ cardInfo }) => {
+const Card = ({ cardInfo ,index }) => {
  const dispatch = useDispatch();
  const [selectedCard, setSelectedCard] = useState(null);
  const [textareaValue, setTextareaValue] = useState("");
@@ -31,10 +31,13 @@ const Card = ({ cardInfo }) => {
    console.log(cardInfo);
    dispatch(updateChildList(updatedData));
  };
+ const handledragstart=(e,id)=>{
+  console.log("drag the card");
+ }
  return (
    <>
-     <div onClick={() => openModal()}>
-       <div className="bg-white p-2 mt-2 shadow-md rounded-md">
+     <div className="cursor-pointer" onClick={() => openModal()} >
+       <div className="bg-white p-2 mt-2 shadow-md rounded-md " >
          {cardInfo.title}
          <button
            title="Delete Card"

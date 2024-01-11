@@ -1,24 +1,53 @@
 import React from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { deleteList } from "../store/listSlice";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Card from "./Card";
 import AddNew from "./AddNew";
+
 const List = () => {
   const listItem = useSelector((store) => store.listSlice.list);
   console.log(listItem);
   const dispatch = useDispatch();
 
   const deleteListFn = (id) => {
-    console.log("id", id);
     dispatch(deleteList({ id }));
   };
 
+  const onDragEnd = (result) => {
+   const{source,destination}=result;
+   console.log(source,destination);
+    console.log(result);
+    if(!destination)return;
+    if(source.droppableId === destination.droppableId && source.index === destination.index)return;
+    if(source.droppableId === destination.droppableId)
+    {
+      listItem.map((item)=>{
+        let stringdata="droppable-"+item.id.toString();
+        if(source.droppableId === stringdata)
+        {
+          let sourcevalue=item.children[source.index];
+          let destinationvalue=item.children[destination.index];
+          console.log(sourcevalue);
+          console.log(destinationvalue);
+
+
+        }
+         
+            
+            
+          
   
+        }
+      )
+    }
+   
+
+  };
 
   return (
-    <>
-      {listItem.map((list) => (
+    <DragDropContext onDragEnd={onDragEnd}>
+      {listItem.map((list, index) => (
         <div className="p-3 w-full md:w-1/3" key={list.id}>
           <div className={`p-3 bg-gray-100`}>
             <div className="mb-4">
@@ -31,12 +60,30 @@ const List = () => {
                 x
               </button>
             </div>
-            {list?.children?.length > 0 &&
-              list.children.map((children) => (
-                
-                  <Card cardInfo={children} />
-                
-              ))}
+            <Droppable droppableId={`droppable-${list.id}`} type="CARD">
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  {list?.children?.map((children, index) => (
+                    <Draggable
+                      key={children.id}
+                      draggableId={`draggable-${children.id}`}
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <Card cardInfo={children} index={index}/>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
             <div className="mt-3">
               <AddNew type="card" parentId={list.id} />
             </div>
@@ -46,10 +93,17 @@ const List = () => {
 
       <div className="p-3 w-full md:w-1/3">
         <div className={`p-3 bg-gray-100 `}>
-          <AddNew />
+          <Droppable droppableId="droppable" type="CARD">
+            {(provided) => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                <AddNew />
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
         </div>
       </div>
-    </>
+    </DragDropContext>
   );
 };
 
