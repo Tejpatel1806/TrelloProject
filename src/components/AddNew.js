@@ -16,7 +16,7 @@ const AddNew = ({ type, parentId }) => {
     }
     if (type) {
       dispatch(
-        addCard({ id: Math.random(), title: inputVal, parentId: parentId })
+        addCard({ id: Math.random(), title: inputVal, parentId: parentId,createdBy:"Tej Patel",createdDate:new Date().toDateString() })
       );
     } else {
       dispatch(addList({ id: Math.random(), title: inputVal }));
