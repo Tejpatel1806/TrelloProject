@@ -1,0 +1,45 @@
+:root{
+  --bgtheme:#dbeafe;
+  --bgwhite:#fff;
+}
+:root.dark{
+  
+  --bgtheme:grey;
+  --bgwhite:#a7a7a7;
+}
+.bg-light{
+  background-color:var(--bgwhite);
+}
+.sidebar{
+  height:calc(100vh - 50px);
+  background-color:var(--bgtheme);
+  
+}
+.header{
+  background-color:var(--bgtheme);
+}
+@media only screen and (max-width:767px) {
+  .sidebar{
+    display: none;
+  }
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
