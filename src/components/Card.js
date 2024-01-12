@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import Modal from "react-modal";
 import { deleteChildList, updateChildList } from "../store/listSlice";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 Modal.setAppElement("#root");
 const Card = ({ cardInfo, index }) => {
   const dispatch = useDispatch();
   const [selectedCard, setSelectedCard] = useState(null);
   const [textareaValue, setTextareaValue] = useState(" ");
-  const listItem = useSelector((store) => store.listSlice.list);
+  // const listItem = useSelector((store) => store.listSlice.list);
   const openModal = (cardId) => {
     console.log(cardId,"cardid");
     setSelectedCard(cardId);

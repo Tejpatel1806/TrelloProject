@@ -1,4 +1,4 @@
-import { createSlice,current} from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 const listSlice = createSlice({
   name: "listSlice",
@@ -33,6 +33,7 @@ const listSlice = createSlice({
     deleteChildList: (state, action) => {
       const { id, parentId } = action.payload;
       const itemIndex = state.list.findIndex((item) => item.id === parentId);
+      console.log(itemIndex);
       if (itemIndex !== -1) {
         const childItemIndex = state.list[itemIndex].children.findIndex(
           (item) => item.id === id
@@ -123,15 +124,32 @@ const listSlice = createSlice({
         if (sourceItemIndex !== -1 && destinationItemIndex !== -1) {
           const { index: sourceIndex } = source;
           const { index: destinationIndex } = destination;
-         console.log(sourceIndex,destinationIndex);
-         console.log(current(state.list));
-         
-          const movedItem = current(state.list[sourceItemIndex]?.children[sourceIndex]);
-          console.log("moved item",movedItem);
+          console.log(sourceIndex, destinationIndex);
+          console.log(current(state.list));
+
+          // const movedItem = current(state.list[sourceItemIndex]?.children[sourceIndex]);
+          // console.log("moved item",movedItem);
+          // movedItem.parentId=state.list[destinationItemIndex].id;
+          // console.log("moved item",movedItem);
+
+          const movedItem = {
+            ...current(state.list[sourceItemIndex]?.children[sourceIndex]),
+          };
+          console.log(movedItem,"before");
+
+          // Check if movedItem is not undefined before updating parentId
+          if (movedItem) {
+            movedItem.parentId = state.list[destinationItemIndex].id;
+            console.log("moved item", movedItem);
+          } else {
+            console.error("movedItem is undefined");
+          }
+          console.log(movedItem,"after");
+
+
           state.list[sourceItemIndex].children.splice(sourceIndex, 1);
-          if(!state.list[destinationItemIndex].hasOwnProperty("children"))
-          {
-            state.list[destinationItemIndex].children=[];
+          if (!state.list[destinationItemIndex].hasOwnProperty("children")) {
+            state.list[destinationItemIndex].children = [];
           }
           state.list[destinationItemIndex].children.splice(
             destinationIndex,
@@ -141,8 +159,6 @@ const listSlice = createSlice({
         }
       }
     },
-    
-    
   },
 });
 export const {
