@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteList } from "../store/listSlice";
+import { deleteList, dropchildinsamelist ,dropchildindifferentlist} from "../store/listSlice";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import Card from "./Card";
 import AddNew from "./AddNew";
@@ -15,33 +15,25 @@ const List = () => {
   };
 
   const onDragEnd = (result) => {
-   const{source,destination}=result;
-   console.log(source,destination);
-    console.log(result);
-    if(!destination)return;
-    if(source.droppableId === destination.droppableId && source.index === destination.index)return;
-    if(source.droppableId === destination.droppableId)
-    {
-      listItem.map((item)=>{
-        let stringdata="droppable-"+item.id.toString();
-        if(source.droppableId === stringdata)
-        {
-          let sourcevalue=item.children[source.index];
-          let destinationvalue=item.children[destination.index];
-          console.log(sourcevalue);
-          console.log(destinationvalue);
-
-
-        }
-         
-            
-            
-          
-  
-        }
-      )
+    const { source, destination } = result;
+    // console.log(source, destination);
+    // console.log(result);
+    const data={
+      source:source,
+      destination:destination
     }
-   
+    if (!destination) return;
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    )
+      return;
+    if (source.droppableId === destination.droppableId) {
+      dispatch(dropchildinsamelist(data));
+    }
+    if (source.droppableId !== destination.droppableId) {
+      dispatch(dropchildindifferentlist(data));
+    }
 
   };
 
@@ -75,7 +67,7 @@ const List = () => {
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
                         >
-                          <Card cardInfo={children} index={index}/>
+                          <Card cardInfo={children} index={index} />
                         </div>
                       )}
                     </Draggable>

@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice,current} from "@reduxjs/toolkit";
+
 const listSlice = createSlice({
   name: "listSlice",
   initialState: {
@@ -65,6 +66,83 @@ const listSlice = createSlice({
         }
       }
     },
+    dropchildinsamelist: (state, action) => {
+      const { source, destination } = action.payload;
+      if (
+        source &&
+        destination &&
+        source.droppableId === destination.droppableId
+      ) {
+        const parentId = source.droppableId;
+        console.log(parentId);
+        const itemIndex = state.list.findIndex(
+          (item) => "droppable-" + item.id.toString() === parentId
+        );
+
+        if (itemIndex !== -1) {
+          const { index: sourceIndex } = source;
+          const { index: destinationIndex } = destination;
+          const updatedItem = { ...state.list[itemIndex] };
+          [
+            updatedItem.children[sourceIndex],
+            updatedItem.children[destinationIndex],
+          ] = [
+            updatedItem.children[destinationIndex],
+            updatedItem.children[sourceIndex],
+          ];
+          console.log("updated is", updatedItem);
+          state.list = [
+            ...state.list.slice(0, itemIndex),
+            updatedItem,
+            ...state.list.slice(itemIndex + 1),
+          ];
+        }
+      }
+
+      // console.log(current(state));
+    },
+    dropchildindifferentlist: (state, action) => {
+      const { source, destination } = action.payload;
+      console.log(source, destination);
+      if (
+        source &&
+        destination &&
+        source.droppableId !== destination.droppableId
+      ) {
+        const sourceParentId = source.droppableId;
+        const destinationParentId = destination.droppableId;
+
+        const sourceItemIndex = state.list.findIndex(
+          (item) => "droppable-" + item.id.toString() === sourceParentId
+        );
+
+        const destinationItemIndex = state.list.findIndex(
+          (item) => "droppable-" + item.id.toString() === destinationParentId
+        );
+        console.log(sourceItemIndex, destinationItemIndex);
+        if (sourceItemIndex !== -1 && destinationItemIndex !== -1) {
+          const { index: sourceIndex } = source;
+          const { index: destinationIndex } = destination;
+         console.log(sourceIndex,destinationIndex);
+         console.log(current(state.list));
+         
+          const movedItem = current(state.list[sourceItemIndex]?.children[sourceIndex]);
+          console.log("moved item",movedItem);
+          state.list[sourceItemIndex].children.splice(sourceIndex, 1);
+          if(!state.list[destinationItemIndex].hasOwnProperty("children"))
+          {
+            state.list[destinationItemIndex].children=[];
+          }
+          state.list[destinationItemIndex].children.splice(
+            destinationIndex,
+            0,
+            movedItem
+          );
+        }
+      }
+    },
+    
+    
   },
 });
 export const {
@@ -73,5 +151,7 @@ export const {
   deleteList,
   deleteChildList,
   updateChildList,
+  dropchildinsamelist,
+  dropchildindifferentlist,
 } = listSlice.actions;
 export default listSlice.reducer;

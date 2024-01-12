@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
 import { addList, addCard } from "../store/listSlice";
-import { useDispatch } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 const AddNew = ({ type, parentId }) => {
   const [inputVal, setInputVal] = useState("");
   const [isFormVisible, setIsFormVisible] = useState(false);
   // console.log("type", type);
-
+  const listItem = useSelector((store) => store.listSlice.list);
   const dispatch = useDispatch();
   const forminput = useRef(null);
   const submitHandler = (e) => {
